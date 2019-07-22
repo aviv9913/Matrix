@@ -4,20 +4,25 @@
 #ifndef MATRIX_MATRIX_H
 #define MATRIX_MATRIX_H
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class Matrix{
     int rows;
     int cols;
     double** data;
+    void createData(int rows, int cols);
+    void destroyData(double** data);
     void checkSize(int rows, int cols);
     void changeValue(int row, int col, double value);
 
 public:
     Matrix(int rows, int cols);
-    //Matrix(int rows, int cols, double** data);
     Matrix(int rows, int cols, double min, double max);
+    Matrix(const Matrix& mtx);
+    Matrix(vector<vector<double>> data);
     ~Matrix();
+    Matrix& operator=(const Matrix& mtx);
     int getRows() const;
     int getCols() const;
     double operator()(int row, int col) const;

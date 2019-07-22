@@ -8,17 +8,31 @@ void Matrix::checkSize(int rows, int cols) {
     if(rows==0)
         if(cols<=0){
             cerr<<"ERROR:invalid size - no values"<<endl;
-            exit(0);
+            exit(1);
         }
 
     if(cols==0)
         if(rows<=0){
             cerr<<"ERROR:invalid size - no values"<<endl;
-            exit(0);
+            exit(1);
         }
     if(rows<0||cols<0){
         cerr<<"ERROR:invalid size - negative number"<<endl;
-        exit(0);
+        exit(1);
+    }
+}
+
+void Matrix::destroyData(double **data) {
+    for(int i=0;i<rows;i++){
+        delete[] data[i];
+    }
+    delete[] data;
+}
+
+void Matrix::createData(int rows, int cols) {
+    data = new double*[rows];
+    for(int i=0;i<rows;i++) {
+        data[i] = new double[cols];
     }
 }
 
@@ -26,9 +40,8 @@ Matrix::Matrix(int rows, int cols){
     checkSize(rows, cols);
     this->rows = rows;
     this->cols = cols;
-    data = new double*[rows];
+    this->createData(rows,cols);
     for(int i=0;i<rows;i++){
-        data[i] = new double[cols];
         for(int j=0;j<cols;j++){
             data[i][j] = 0;
         }
@@ -39,10 +52,9 @@ Matrix::Matrix(int rows, int cols, double min, double max){
     checkSize(rows, cols);
     this->rows = rows;
     this->cols = cols;
-    data = new double*[rows];
+    this->createData(rows,cols);
     double rand_num = fRand(min, max);
     for(int i=0;i<rows;i++){
-        data[i] = new double[cols];
         for(int j=0;j<cols;j++){
             data[i][j] = rand_num;
             rand_num = fRand(min, max);
@@ -50,11 +62,52 @@ Matrix::Matrix(int rows, int cols, double min, double max){
     }
 }
 
-Matrix::~Matrix() {
-    for(int i=0;i<rows;i++){
-        delete[] data[i];
+Matrix::Matrix(const Matrix &mtx) {
+    this->rows = mtx.rows;
+    this->cols = mtx.cols;
+    this->createData(rows, cols);
+    for(int i = 0; i<rows;i++){
+        for(int j=0;j<cols;j++){
+            data[i][j] = mtx.data[i][j];
+        }
     }
-    delete[] data;
+}
+
+Matrix::Matrix(vector<vector<double>> data) {
+    int rows = data.size();
+    int cols = data[0].size();
+    checkSize(rows, cols);
+    this->rows = rows;
+    this->cols = cols;
+    this->createData(rows,cols);
+    int i=0, j=0;
+    for(vector<double> row : data){
+        for(double num : row){
+            this->data[i][j] = num;
+            j++;
+            if(j>=cols){
+                j=0;
+                i++;
+            }
+        }
+    }
+}
+
+Matrix::~Matrix() {
+    destroyData(data);
+}
+
+Matrix &Matrix::operator=(const Matrix &mtx) {
+    this->destroyData(data);
+    this->rows = mtx.rows;
+    this->cols = mtx.cols;
+    this->createData(rows, cols);
+    for(int i = 0; i<rows;i++){
+        for(int j=0;j<cols;j++){
+            data[i][j] = mtx.data[i][j];
+        }
+    }
+    return *this;
 }
 
 int Matrix::getCols() const {
@@ -88,8 +141,8 @@ Matrix& Matrix::operator+=(const Matrix &mtx) {
         cerr<<"ERROR:trying to add a "<<new_rows<<"X"<<new_cols
             <<" matrix to "<<rows<<"X"<<cols<<" matrix"<<endl;
     }
-    for(int i=0;i<new_cols;i++){
-        for(int j=0;j<new_rows;j++){
+    for(int i=0;i<new_rows;i++){
+        for(int j=0;j<new_cols;j++){
             data[i][j] += mtx.data[i][j];
         }
     }
@@ -103,14 +156,14 @@ Matrix& Matrix::operator-=(const Matrix &mtx) {
 }
 
 double Matrix::operator()(int row, int col) const {
-    return data[col][row];
+    return data[row][col];
 }
 
 Matrix& Matrix::T() {
     Matrix trans(cols, rows);
-    for(int i=0;i<cols;i++){
-        for(int j=0;j<rows;j++){
-            trans.changeValue(i ,j, data[i][j]);
+    for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+            trans.changeValue(j ,i, data[i][j]);
         }
     }
     *this = trans;
@@ -118,12 +171,12 @@ Matrix& Matrix::T() {
 }
 
 ostream& operator<<(ostream& os, const Matrix& mtx){
-    int new_rows = mtx.cols;
-    int new_cols = mtx.rows;
-    os<<new_rows<<"X"<<new_cols<<"\n";
-    for(int i=0;i<new_rows;i++){
+    int rows = mtx.rows;
+    int cols = mtx.cols;
+    os<<rows<<"X"<<cols<<"\n";
+    for(int i=0;i<rows;i++){
         os<<"( ";
-        for(int j=0;j<new_cols;j++){
+        for(int j=0;j<cols;j++){
             os<<mtx.data[i][j]<<" ";
         }
         os<<")\n";
