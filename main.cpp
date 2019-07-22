@@ -12,7 +12,7 @@ int main() {
         }
         cout<<"\n";
     }
-    Matrix mtx(a);
+    Matrix mtx({{1,1,1,1},{2,2,2}});
     cout<<mtx<<endl;
     mtx.T();
     cout<<mtx<<endl;

@@ -76,17 +76,23 @@ Matrix::Matrix(const Matrix &mtx) {
 Matrix::Matrix(vector<vector<double>> data) {
     int rows = data.size();
     int cols = data[0].size();
+    for(vector<double> row : data){
+        if(row.size()!=cols){
+            cerr<<"error creating a new matrix, rows have different size";
+            exit(1);
+        }
+    }
     checkSize(rows, cols);
     this->rows = rows;
     this->cols = cols;
     this->createData(rows,cols);
     int i=0, j=0;
-    for(vector<double> row : data){
-        for(double num : row){
+    for(vector<double> row : data) {
+        for (double num : row) {
             this->data[i][j] = num;
             j++;
-            if(j>=cols){
-                j=0;
+            if (j >= cols) {
+                j = 0;
                 i++;
             }
         }
