@@ -146,6 +146,7 @@ Matrix& Matrix::operator+=(const Matrix &mtx) {
     if(new_rows!=rows||new_cols!=cols){
         cerr<<"ERROR:trying to add a "<<new_rows<<"X"<<new_cols
             <<" matrix to "<<rows<<"X"<<cols<<" matrix"<<endl;
+        exit(1);
     }
     for(int i=0;i<new_rows;i++){
         for(int j=0;j<new_cols;j++){
@@ -161,19 +162,38 @@ Matrix& Matrix::operator-=(const Matrix &mtx) {
     return -(*this);
 }
 
+Matrix &Matrix::operator*=(const Matrix &mtx) {
+    if(cols != mtx.rows){
+        cerr<<"ERROR:\nmultiplication does not defined: "<<rows<<"X"<<cols
+        <<" matrix with "<< mtx.rows<<"X"<<mtx.cols<<" matrix"<<endl;
+        exit(1);
+    }
+    Matrix result(rows, mtx.cols);
+    for(int i=0;i<result.rows; i++){
+        for(int j=0; j<result.cols; j++){
+            double sum =0;
+            for(int k=0;k<cols ;k++){
+                sum+=(*this)(i,k)*mtx(k,j);
+            }
+            result.changeValue(i,j,sum);
+        }
+    }
+    *this = result;
+    return *this;
+}
+
 double Matrix::operator()(int row, int col) const {
     return data[row][col];
 }
 
-Matrix& Matrix::T() {
+Matrix Matrix::T() {
     Matrix trans(cols, rows);
     for(int i=0;i<rows;i++){
         for(int j=0;j<cols;j++){
             trans.changeValue(j ,i, data[i][j]);
         }
     }
-    *this = trans;
-    return *this;
+    return trans;
 }
 
 ostream& operator<<(ostream& os, const Matrix& mtx){
@@ -190,17 +210,21 @@ ostream& operator<<(ostream& os, const Matrix& mtx){
     return os;
 }
 
-Matrix& operator+(const Matrix& mtx1 , const Matrix& mtx2){
+Matrix operator+(const Matrix& mtx1 , const Matrix& mtx2){
     return Matrix(mtx1)+=mtx2;
 }
 
-Matrix& operator-(const Matrix& mtx1 , const Matrix& mtx2){
+Matrix operator-(const Matrix& mtx1 , const Matrix& mtx2){
     return Matrix(mtx1)-=mtx2;
 }
 
 double fRand(double fMin, double fMax){
     double f = (double)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
+}
+
+Matrix operator*(const Matrix &mtx1, const Matrix &mtx2) {
+    return Matrix(mtx1)*=mtx2;
 }
 
 #include "Matrix.h"

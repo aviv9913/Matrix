@@ -17,8 +17,8 @@ class Matrix{
     void changeValue(int row, int col, double value);
 
 public:
-    Matrix(int rows, int cols);
-    Matrix(int rows, int cols, double min, double max);
+    Matrix(int rows, int cols);//zeros metrix with rowsXcols
+    Matrix(int rows, int cols, double min, double max);//random metrix with rowsXcols value between min to max
     Matrix(const Matrix& mtx);
     Matrix(vector<vector<double>> data);
     ~Matrix();
@@ -29,15 +29,16 @@ public:
     Matrix& operator-();
     Matrix& operator+=(const Matrix& mtx);
     Matrix& operator-=(const Matrix& mtx);
-    Matrix& T();
+    Matrix& operator*=(const Matrix& mtx);
+    Matrix T();
     //void convertToEchlon();
     friend ostream& operator<<(ostream& os, const Matrix& mtx);
     class InvalidIndex:public exception{};
 };
 
-Matrix& operator+(const Matrix& mtx1 , const Matrix& mtx2);
-Matrix& operator-(const Matrix& mtx1 , const Matrix& mtx2);
-Matrix& operator*(const Matrix& mtx1 , const Matrix& mtx2);
+Matrix operator+(const Matrix& mtx1 , const Matrix& mtx2);
+Matrix operator-(const Matrix& mtx1 , const Matrix& mtx2);
+Matrix operator*(const Matrix& mtx1 , const Matrix& mtx2);
 double fRand(double fMin, double fMax);
 
 #endif //MATRIX_MATRIX_H

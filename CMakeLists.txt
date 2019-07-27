@@ -3,4 +3,4 @@ project(Matrix)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Matrix main.cpp Matrix.cpp Matrix.h)
+add_executable(Matrix main.cpp Matrix.cpp Matrix.h Neural_Network.cpp Neural_Network.h)
