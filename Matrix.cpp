@@ -141,8 +141,8 @@ Matrix& Matrix::operator-() {
 }
 
 Matrix& Matrix::operator+=(const Matrix &mtx) {
-    int new_rows = mtx.cols;
-    int new_cols = mtx.rows;
+    int new_rows = mtx.rows;
+    int new_cols = mtx.cols;
     if(new_rows!=rows||new_cols!=cols){
         cerr<<"ERROR:trying to add a "<<new_rows<<"X"<<new_cols
             <<" matrix to "<<rows<<"X"<<cols<<" matrix"<<endl;
@@ -173,7 +173,7 @@ Matrix &Matrix::operator*=(const Matrix &mtx) {
         for(int j=0; j<result.cols; j++){
             double sum =0;
             for(int k=0;k<cols ;k++){
-                sum+=(*this)(i,k)*mtx(k,j);
+                sum+=(*this)(i+1,k+1)*mtx(k+1,j+1);
             }
             result.changeValue(i,j,sum);
         }
@@ -182,8 +182,22 @@ Matrix &Matrix::operator*=(const Matrix &mtx) {
     return *this;
 }
 
+Matrix &Matrix::operator*=(const double& a) {
+    for(int i=0;i<rows; i++){
+        for(int j=0; j<cols; j++){
+            double num = (*this)(i+1,j+1);
+            this->changeValue(i,j,num*a);
+        }
+    }
+    return *this;
+}
+
 double Matrix::operator()(int row, int col) const {
-    return data[row][col];
+    if(row>this->rows||col>this->cols){
+        cerr<<"error - trying to access an invalid index"<<endl;
+        exit(1);
+    }
+    return data[row-1][col-1];
 }
 
 Matrix Matrix::T() {
@@ -225,6 +239,14 @@ double fRand(double fMin, double fMax){
 
 Matrix operator*(const Matrix &mtx1, const Matrix &mtx2) {
     return Matrix(mtx1)*=mtx2;
+}
+
+Matrix operator*(const Matrix &mtx, const double& a) {
+    return Matrix(mtx)*=a;
+}
+
+Matrix operator*( const double& a, const Matrix &mtx) {
+    return mtx*a;
 }
 
 #include "Matrix.h"

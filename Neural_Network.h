@@ -7,12 +7,13 @@
 #include "Matrix.h"
 
 class Neural_Network {
-    Matrix weights;
+    Matrix weights = Matrix(1,1);
 public:
-    Neural_Network();
-    ~Neural_Network();
+    Neural_Network() = default;
+    ~Neural_Network() = default;
     void train(Matrix inputs, Matrix outputs, int num);
     double think(Matrix inputs);
+    friend ostream& operator<<(ostream& os, const Neural_Network& nw);
 };
 
 

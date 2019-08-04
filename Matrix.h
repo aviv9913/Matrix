@@ -30,6 +30,7 @@ public:
     Matrix& operator+=(const Matrix& mtx);
     Matrix& operator-=(const Matrix& mtx);
     Matrix& operator*=(const Matrix& mtx);
+    Matrix& operator*=(const double& a);
     Matrix T();
     //void convertToEchlon();
     friend ostream& operator<<(ostream& os, const Matrix& mtx);
@@ -39,6 +40,8 @@ public:
 Matrix operator+(const Matrix& mtx1 , const Matrix& mtx2);
 Matrix operator-(const Matrix& mtx1 , const Matrix& mtx2);
 Matrix operator*(const Matrix& mtx1 , const Matrix& mtx2);
+Matrix operator*(const Matrix& mtx , const double& a);
+Matrix operator*(const double& a ,const Matrix& mtx);
 double fRand(double fMin, double fMax);
 
 #endif //MATRIX_MATRIX_H
