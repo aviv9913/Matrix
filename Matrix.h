@@ -18,6 +18,7 @@ class Matrix{
 
 public:
     Matrix(int rows, int cols);//zeros metrix with rowsXcols
+    Matrix(int rows, int cols, double value);
     Matrix(int rows, int cols, double min, double max);//random metrix with rowsXcols value between min to max
     Matrix(const Matrix& mtx);
     Matrix(vector<vector<double>> data);
@@ -32,6 +33,8 @@ public:
     Matrix& operator*=(const Matrix& mtx);
     Matrix& operator*=(const double& a);
     Matrix T();
+    Matrix addCol(const Matrix colToAdd);
+    Matrix addRow(const Matrix rowToAdd);
     //void convertToEchlon();
     friend ostream& operator<<(ostream& os, const Matrix& mtx);
     class InvalidIndex:public exception{};

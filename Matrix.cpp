@@ -48,6 +48,18 @@ Matrix::Matrix(int rows, int cols){
     }
 }
 
+Matrix::Matrix(int rows, int cols, double value) {
+    checkSize(rows, cols);
+    this->rows = rows;
+    this->cols = cols;
+    this->createData(rows,cols);
+    for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+            data[i][j] = value;
+        }
+    }
+}
+
 Matrix::Matrix(int rows, int cols, double min, double max){
     checkSize(rows, cols);
     this->rows = rows;
@@ -249,4 +261,30 @@ Matrix operator*( const double& a, const Matrix &mtx) {
     return mtx*a;
 }
 
+Matrix Matrix::addCol(const Matrix colToAdd){
+    if(colToAdd.getCols() != 1){
+        cerr<<"Error - trying to append non col matrix"<<endl;
+        exit(1);
+    }
+    Matrix tmp(cols, cols+1);
+    for(int i=0; i<cols; i++){
+        tmp.changeValue(i,i, 1);
+    }
+    *this *= tmp;
+    Matrix vector(1, cols);
+    vector.changeValue(0, cols-1 ,1);
+    tmp = colToAdd*vector;
+    *this += tmp;
+    return *this;
+}
+
+Matrix Matrix::addRow(const Matrix rowToAdd){
+    if(rowToAdd.getRows() != 1){
+        cerr<<"Error - trying to append non row matrix"<<endl;
+        exit(1);
+    }
+    Matrix vector = rowToAdd;
+    *this = (((*this).T()).addCol(vector.T())).T();
+    return *this;
+}
 #include "Matrix.h"
